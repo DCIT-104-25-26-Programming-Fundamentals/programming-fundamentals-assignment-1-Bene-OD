@@ -90,3 +90,98 @@
 # YOUR CODE BELOW — remove the # symbols from the scaffold and fill it in
 # =============================================================================
 
+def show_menu():
+    print("===============================")
+    print("   STUDENT RECORD SYSTEM MENU")
+    print("===============================")
+    print("1. Add student")
+    print("2. Display all students")
+    print("3. Calculate average score")
+    print("4. Quit")
+
+
+def add_student(records):
+    name = input("Student name: ").strip()
+    try:
+        student_id = int(input("Student ID: "))
+    except ValueError:
+        print("Error: Student ID must be an integer.")
+        return
+
+    try:
+        count = int(input("How many scores? "))
+    except ValueError:
+        print("Error: Please enter a valid number of scores.")
+        return
+
+    if count <= 0:
+        print("Error: Number of scores must be positive.")
+        return
+
+    scores = []
+    for i in range(1, count + 1):
+        while True:
+            try:
+                score = float(input(f"Enter score {i}: "))
+                break
+            except ValueError:
+                print("Error: Please enter a numeric score.")
+        scores.append(score)
+
+    records.append({"name": name, "id": student_id, "scores": scores})
+    print(f"Student \"{name}\" added successfully.")
+
+
+def display_students(records):
+    if not records:
+        print("No students have been added yet.")
+        return
+
+    print("--------------------------------------------------")
+    print(f"{'Name':<15} {'ID':<12} {'Scores':<18} {'Average'}")
+    print("--------------------------------------------------")
+    for student in records:
+        average = sum(student["scores"]) / len(student["scores"])
+        score_text = ", ".join(str(int(score)) if score.is_integer() else str(score) for score in student["scores"])
+        print(f"{student['name']:<15} {student['id']:<12} {score_text:<18} {average:.2f}")
+    print("--------------------------------------------------")
+
+
+def calculate_average_score(records):
+    user_input = input("Enter student ID (or Q to cancel): ").strip()
+    if user_input.lower() in {"q", "quit", "exit"}:
+        print("Operation cancelled.")
+        return
+
+    try:
+        student_id = int(user_input)
+    except ValueError:
+        print("Error: Student ID must be an integer.")
+        return
+
+    for student in records:
+        if student["id"] == student_id:
+            average = sum(student["scores"]) / len(student["scores"])
+            print(f"{student['name']}'s average score: {average:.2f}")
+            return
+
+    print("Error: Student ID not found.")
+
+
+if __name__ == "__main__":
+    records = []
+    while True:
+        show_menu()
+        choice = input("Enter your choice (1-4): ").strip()
+        if choice == "1":
+            add_student(records)
+        elif choice == "2":
+            display_students(records)
+        elif choice == "3":
+            calculate_average_score(records)
+        elif choice == "4":
+            print("Goodbye!")
+            break
+        else:
+            print("Error: Please enter a choice between 1 and 4.")
+
